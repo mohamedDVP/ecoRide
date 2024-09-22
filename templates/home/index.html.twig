@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EcoRide - Accueil{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif;  }
+    .example-wrapper code { background: #D2D0D1; padding: 2px 6px; }
+</style>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <img src="{{ asset('assets/logo-ecoride.webp') }}" width="1440px" height="550px" alt="Symfony!"/>
+</div>
+<div class="example-wrapper">
+    <h1>EcoRide</h1>
+</div>
+{% endblock %}
