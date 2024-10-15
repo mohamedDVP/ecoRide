@@ -4,7 +4,7 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif;  }
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 100%; font: 18px/1.5 sans-serif;  }
 </style>
 <nav class="navbar navbar-expand-lg">
 	<div class="container-fluid ">
@@ -45,7 +45,7 @@
 				<input class="form-control me-2" type="search" placeholder="Rechercher" aria-label="Search">
 				<button class="btn btn-outline-success" type="submit">Rechercher</button>
 			</form>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+            <ul class="navbar-nav d-flex ">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Inscription</a>
                 </li>
@@ -57,10 +57,15 @@
 	</div>
 </nav>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <img src="{{ asset('assets/logo-ecoride.webp') }}" width="1440px" height="550px" alt="Logo EcoRide"/>
-</div>
-<div class="example-wrapper justify-content-center">
-    <h1>EcoRide</h1>
+
+
+
+<img src="{{ asset('assets/logo-ecoride.webp') }}" alt="Logo EcoRide"/>
+
+
+
+<div class="d-flex justify-content-center">
+<h1 class="mx-auto p-4">EcoRide</h1>
+
 </div>
 {% endblock %}
