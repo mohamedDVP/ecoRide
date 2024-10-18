@@ -2,11 +2,14 @@
 {% block title %}EcoRide - Accueil{% endblock %}
 {% block body %}
     <img src="{{ asset('assets/logo-ecoride.webp') }}" alt="Logo EcoRide"/>
-    <div class="px-4 py-5 my-5 text-center">
+    <div class="px-4 py-3 my-3 text-center">
         <h1 class="display-5 fw-bold text-body-emphasis">EcoRide</h1>
         <div class="col-lg-6 mx-auto">
-            <p class="lead mb-4">La plateforme principale pour les voyageurs soucieux de l’environnement et qui cherchent une solution économique pour leurs déplacements.</p>
+            <p class="lead mb-3 ">La plateforme principale pour les voyageurs soucieux de l’environnement et qui cherchent une solution économique pour leurs déplacements.</p>
         </div>
+    </div>
+    <div class="d-grid gap-2 col-2 mx-auto mb-4">
+        <button class="btn btn-primary collapse" type="button" data-toggle="collapse" data-target="#demo">Rechercher un covoiturage</button>
     </div>
     <div class="container">
         <div class="row text-center justify-content-between">
@@ -42,4 +45,6 @@
             </div>
         </div>
     </div>
+
+
 {% endblock %}
