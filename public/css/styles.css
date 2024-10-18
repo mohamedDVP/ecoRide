@@ -11,3 +11,7 @@ img {
     width: 50px;
     height: 40px;
 }
+
+nav ul {
+    justify-content: space-evenly;
+}
