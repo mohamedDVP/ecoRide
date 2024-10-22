@@ -27,17 +27,19 @@
                 font: 18px / 1.5 sans-serif;
             }
         </style>
-        <div class="container">
-            <header class=" d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-                <nav class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <div class="container-fluid ">
-                        <img src="{{ asset('assets/logo-ecoride.webp') }}" class="logo" alt="Logo EcoRide"/>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg rounded" aria-label="Thirteenth navbar example">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-lg-center">
 
+                        <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
+                            <a class="navbar-brand col-lg-3 me-0" href="#">
+                                <img src="{{ asset('assets/logo-ecoride.webp') }}" class="logo" alt="Logo EcoRide"/>
+                            </a>
+                            <ul class="navbar-nav col-lg-6 justify-content-lg-center">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="#">Accueil</a>
                                 </li>
@@ -48,19 +50,15 @@
                                     <a class="nav-link" href="#">Contact</a>
                                 </li>
                             </ul>
-                            <ul class="navbar-nav d-flex ">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Inscription</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Connexion</a>
-                                </li>
-                            </ul>
+                            <div class="d-lg-flex col-lg-3 justify-content-lg-end">
+                                <button class="btn btn-primary me-3">Connexion</button>
+                                <button class="btn btn-primary">Inscription</button>
+                            </div>
                         </div>
                     </div>
                 </nav>
+                </div>
             </header>
-        </div>
         {% block body %}
         {% endblock %}
         <div class="container">
