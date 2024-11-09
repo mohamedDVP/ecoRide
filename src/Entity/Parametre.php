@@ -13,14 +13,15 @@ class Parametre
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $propriete = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $valeur = null;
 
     #[ORM\ManyToOne(inversedBy: 'parametres')]
-    private ?Configuration $idConfiguration = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Configuration $configuration = null;
 
     public function getId(): ?int
     {
@@ -51,14 +52,14 @@ class Parametre
         return $this;
     }
 
-    public function getIdConfiguration(): ?Configuration
+    public function getConfiguration(): ?Configuration
     {
-        return $this->idConfiguration;
+        return $this->configuration;
     }
 
-    public function setIdConfiguration(?Configuration $idConfiguration): static
+    public function setConfiguration(?Configuration $configuration): static
     {
-        $this->idConfiguration = $idConfiguration;
+        $this->configuration = $configuration;
 
         return $this;
     }

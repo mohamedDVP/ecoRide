@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\VoitureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
@@ -15,38 +16,38 @@ class Voiture
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $modele = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 20)]
     private ?string $immatriculation = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 30)]
     private ?string $energie = null;
 
     #[ORM\Column(length: 50)]
     private ?string $couleur = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $datePremiereImmatriculation = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    private ?\DateTimeImmutable $date_premiere_immatriculation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Marque $marque = null;
 
     /**
      * @var Collection<int, Covoiturage>
      */
-    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'voiture')]
-    private Collection $covoiturageId;
-
-    #[ORM\ManyToOne(inversedBy: 'voitureID')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Marque $marque = null;
-
-    #[ORM\ManyToOne(inversedBy: 'voitures')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $idUser = null;
+    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'voiture', orphanRemoval: true)]
+    private Collection $covoiturages;
 
     public function __construct()
     {
-        $this->covoiturageId = new ArrayCollection();
+        $this->covoiturages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -102,44 +103,26 @@ class Voiture
         return $this;
     }
 
-    public function getDatePremiereImmatriculation(): ?string
+    public function getDatePremiereImmatriculation(): ?\DateTimeImmutable
     {
-        return $this->datePremiereImmatriculation;
+        return $this->date_premiere_immatriculation;
     }
 
-    public function setDatePremiereImmatriculation(string $datePremiereImmatriculation): static
+    public function setDatePremiereImmatriculation(\DateTimeImmutable $date_premiere_immatriculation): static
     {
-        $this->datePremiereImmatriculation = $datePremiereImmatriculation;
+        $this->date_premiere_immatriculation = $date_premiere_immatriculation;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Covoiturage>
-     */
-    public function getCovoiturageId(): Collection
+    public function getUser(): ?User
     {
-        return $this->covoiturageId;
+        return $this->user;
     }
 
-    public function addCovoiturageId(Covoiturage $covoiturageId): static
+    public function setUser(?User $user): static
     {
-        if (!$this->covoiturageId->contains($covoiturageId)) {
-            $this->covoiturageId->add($covoiturageId);
-            $covoiturageId->setVoiture($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCovoiturageId(Covoiturage $covoiturageId): static
-    {
-        if ($this->covoiturageId->removeElement($covoiturageId)) {
-            // set the owning side to null (unless already changed)
-            if ($covoiturageId->getVoiture() === $this) {
-                $covoiturageId->setVoiture(null);
-            }
-        }
+        $this->user = $user;
 
         return $this;
     }
@@ -156,14 +139,32 @@ class Voiture
         return $this;
     }
 
-    public function getIdUser(): ?User
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
     {
-        return $this->idUser;
+        return $this->covoiturages;
     }
 
-    public function setIdUser(?User $idUser): static
+    public function addCovoiturage(Covoiturage $covoiturage): static
     {
-        $this->idUser = $idUser;
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            // set the owning side to null (unless already changed)
+            if ($covoiturage->getVoiture() === $this) {
+                $covoiturage->setVoiture(null);
+            }
+        }
 
         return $this;
     }

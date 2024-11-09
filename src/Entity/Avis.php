@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AvisRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
@@ -15,8 +16,8 @@ class Avis
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $commmentaire = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $commentaire = null;
 
     #[ORM\Column]
     private ?int $note = null;
@@ -27,12 +28,15 @@ class Avis
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'idAvis')]
-    private Collection $user;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'avis')]
+    private Collection $users;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $published_at = null;
 
     public function __construct()
     {
-        $this->user = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -40,14 +44,14 @@ class Avis
         return $this->id;
     }
 
-    public function getCommmentaire(): ?string
+    public function getCommentaire(): ?string
     {
-        return $this->commmentaire;
+        return $this->commentaire;
     }
 
-    public function setCommmentaire(string $commmentaire): static
+    public function setCommentaire(string $commentaire): static
     {
-        $this->commmentaire = $commmentaire;
+        $this->commentaire = $commentaire;
 
         return $this;
     }
@@ -79,16 +83,16 @@ class Avis
     /**
      * @return Collection<int, User>
      */
-    public function getUser(): Collection
+    public function getUsers(): Collection
     {
-        return $this->user;
+        return $this->users;
     }
 
     public function addUser(User $user): static
     {
-        if (!$this->user->contains($user)) {
-            $this->user->add($user);
-            $user->addIdAvis($this);
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addAvi($this);
         }
 
         return $this;
@@ -96,9 +100,21 @@ class Avis
 
     public function removeUser(User $user): static
     {
-        if ($this->user->removeElement($user)) {
-            $user->removeIdAvis($this);
+        if ($this->users->removeElement($user)) {
+            $user->removeAvi($this);
         }
+
+        return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeImmutable
+    {
+        return $this->published_at;
+    }
+
+    public function setPublishedAt(\DateTimeImmutable $published_at): static
+    {
+        $this->published_at = $published_at;
 
         return $this;
     }

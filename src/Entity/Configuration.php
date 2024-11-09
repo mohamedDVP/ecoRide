@@ -16,12 +16,13 @@ class Configuration
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'configurations')]
-    private ?User $idUser = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     /**
      * @var Collection<int, Parametre>
      */
-    #[ORM\OneToMany(targetEntity: Parametre::class, mappedBy: 'idConfiguration')]
+    #[ORM\OneToMany(targetEntity: Parametre::class, mappedBy: 'configuration')]
     private Collection $parametres;
 
     public function __construct()
@@ -34,14 +35,14 @@ class Configuration
         return $this->id;
     }
 
-    public function getIdUser(): ?User
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
 
-    public function setIdUser(?User $idUser): static
+    public function setUser(?User $user): static
     {
-        $this->idUser = $idUser;
+        $this->user = $user;
 
         return $this;
     }
@@ -58,7 +59,7 @@ class Configuration
     {
         if (!$this->parametres->contains($parametre)) {
             $this->parametres->add($parametre);
-            $parametre->setIdConfiguration($this);
+            $parametre->setConfiguration($this);
         }
 
         return $this;
@@ -68,8 +69,8 @@ class Configuration
     {
         if ($this->parametres->removeElement($parametre)) {
             // set the owning side to null (unless already changed)
-            if ($parametre->getIdConfiguration() === $this) {
-                $parametre->setIdConfiguration(null);
+            if ($parametre->getConfiguration() === $this) {
+                $parametre->setConfiguration(null);
             }
         }
 

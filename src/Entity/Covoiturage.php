@@ -17,40 +17,40 @@ class Covoiturage
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $dateDepart = null;
+    private ?\DateTimeImmutable $date_depart = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $heureDepart = null;
+    private ?\DateTimeImmutable $heure_depart = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $lieuDepart = null;
+    #[ORM\Column(length: 255)]
+    private ?string $lieu_depart = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $dateArrivee = null;
+    private ?\DateTimeImmutable $date_arrivee = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $heureArrivee = null;
+    private ?\DateTimeImmutable $heure_arrivee = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $lieuArrivee = null;
+    #[ORM\Column(length: 255)]
+    private ?string $lieu_arrivee = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
     #[ORM\Column]
-    private ?int $nbPlace = null;
+    private ?int $nb_place = null;
 
     #[ORM\Column]
-    private ?float $prixPersonne = null;
+    private ?float $prix_personne = null;
 
-    #[ORM\ManyToOne(inversedBy: 'covoiturageId')]
+    #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Voiture $voiture = null;
 
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'idCovoiturage')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturage')]
     private Collection $users;
 
     public function __construct()
@@ -65,72 +65,72 @@ class Covoiturage
 
     public function getDateDepart(): ?\DateTimeImmutable
     {
-        return $this->dateDepart;
+        return $this->date_depart;
     }
 
-    public function setDateDepart(\DateTimeImmutable $dateDepart): static
+    public function setDateDepart(\DateTimeImmutable $date_depart): static
     {
-        $this->dateDepart = $dateDepart;
+        $this->date_depart = $date_depart;
 
         return $this;
     }
 
     public function getHeureDepart(): ?\DateTimeImmutable
     {
-        return $this->heureDepart;
+        return $this->heure_depart;
     }
 
-    public function setHeureDepart(\DateTimeImmutable $heureDepart): static
+    public function setHeureDepart(\DateTimeImmutable $heure_depart): static
     {
-        $this->heureDepart = $heureDepart;
+        $this->heure_depart = $heure_depart;
 
         return $this;
     }
 
     public function getLieuDepart(): ?string
     {
-        return $this->lieuDepart;
+        return $this->lieu_depart;
     }
 
-    public function setLieuDepart(string $lieuDepart): static
+    public function setLieuDepart(string $lieu_depart): static
     {
-        $this->lieuDepart = $lieuDepart;
+        $this->lieu_depart = $lieu_depart;
 
         return $this;
     }
 
     public function getDateArrivee(): ?\DateTimeImmutable
     {
-        return $this->dateArrivee;
+        return $this->date_arrivee;
     }
 
-    public function setDateArrivee(\DateTimeImmutable $dateArrivee): static
+    public function setDateArrivee(\DateTimeImmutable $date_arrivee): static
     {
-        $this->dateArrivee = $dateArrivee;
+        $this->date_arrivee = $date_arrivee;
 
         return $this;
     }
 
     public function getHeureArrivee(): ?\DateTimeImmutable
     {
-        return $this->heureArrivee;
+        return $this->heure_arrivee;
     }
 
-    public function setHeureArrivee(\DateTimeImmutable $heureArrivee): static
+    public function setHeureArrivee(\DateTimeImmutable $heure_arrivee): static
     {
-        $this->heureArrivee = $heureArrivee;
+        $this->heure_arrivee = $heure_arrivee;
 
         return $this;
     }
 
     public function getLieuArrivee(): ?string
     {
-        return $this->lieuArrivee;
+        return $this->lieu_arrivee;
     }
 
-    public function setLieuArrivee(string $lieuArrivee): static
+    public function setLieuArrivee(string $lieu_arrivee): static
     {
-        $this->lieuArrivee = $lieuArrivee;
+        $this->lieu_arrivee = $lieu_arrivee;
 
         return $this;
     }
@@ -149,24 +149,24 @@ class Covoiturage
 
     public function getNbPlace(): ?int
     {
-        return $this->nbPlace;
+        return $this->nb_place;
     }
 
-    public function setNbPlace(int $nbPlace): static
+    public function setNbPlace(int $nb_place): static
     {
-        $this->nbPlace = $nbPlace;
+        $this->nb_place = $nb_place;
 
         return $this;
     }
 
     public function getPrixPersonne(): ?float
     {
-        return $this->prixPersonne;
+        return $this->prix_personne;
     }
 
-    public function setPrixPersonne(float $prixPersonne): static
+    public function setPrixPersonne(float $prix_personne): static
     {
-        $this->prixPersonne = $prixPersonne;
+        $this->prix_personne = $prix_personne;
 
         return $this;
     }
@@ -195,7 +195,7 @@ class Covoiturage
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addIdCovoiturage($this);
+            $user->addCovoiturage($this);
         }
 
         return $this;
@@ -204,7 +204,7 @@ class Covoiturage
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            $user->removeIdCovoiturage($this);
+            $user->removeCovoiturage($this);
         }
 
         return $this;

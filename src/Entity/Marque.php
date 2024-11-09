@@ -15,18 +15,18 @@ class Marque
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
     /**
      * @var Collection<int, Voiture>
      */
-    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'marque')]
-    private Collection $voitureID;
+    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'marque', orphanRemoval: true)]
+    private Collection $voitures;
 
     public function __construct()
     {
-        $this->voitureID = new ArrayCollection();
+        $this->voitures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,27 +49,27 @@ class Marque
     /**
      * @return Collection<int, Voiture>
      */
-    public function getVoitureID(): Collection
+    public function getVoitures(): Collection
     {
-        return $this->voitureID;
+        return $this->voitures;
     }
 
-    public function addVoitureID(Voiture $voitureID): static
+    public function addVoiture(Voiture $voiture): static
     {
-        if (!$this->voitureID->contains($voitureID)) {
-            $this->voitureID->add($voitureID);
-            $voitureID->setMarque($this);
+        if (!$this->voitures->contains($voiture)) {
+            $this->voitures->add($voiture);
+            $voiture->setMarque($this);
         }
 
         return $this;
     }
 
-    public function removeVoitureID(Voiture $voitureID): static
+    public function removeVoiture(Voiture $voiture): static
     {
-        if ($this->voitureID->removeElement($voitureID)) {
+        if ($this->voitures->removeElement($voiture)) {
             // set the owning side to null (unless already changed)
-            if ($voitureID->getMarque() === $this) {
-                $voitureID->setMarque(null);
+            if ($voiture->getMarque() === $this) {
+                $voiture->setMarque(null);
             }
         }
 
