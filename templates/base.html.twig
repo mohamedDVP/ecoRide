@@ -36,10 +36,10 @@
                         </button>
 
                         <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                                    <a class="navbar-brand col-lg-1" href="{{ path('index') }}">
+                                    <a class="navbar-brand col-lg-auto" href="{{ path('index') }}">
                                 <img src="{{ asset('assets/logo-ecoride.webp') }}" class="logo" alt="Logo EcoRide"/>
                             </a>
-                            <ul class="navbar-nav col-lg-4 justify-content-lg-center">
+                            <ul class="navbar-nav col-lg-auto justify-content-lg-center">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="{{ path('index') }}">Accueil</a>
                                 </li>
@@ -50,11 +50,22 @@
                                     <a class="nav-link" href="{{ path('contact') }}">Contact</a>
                                 </li>
                             </ul>
-                            <form class="d-lg-flex col-lg-4 justify-content-center">
-                                <input class="form-control" type="search" placeholder="Rechercher un covoiturage" aria-label="Search">
-                                <button class="btn btn-primary me-5 justify-content-lg-end">Connexion</button>
+                            <form class="d-lg-flex col-lg-auto justify-content-center">
+                            <div class="me-5"> 
+                                <input class="form-control" type="search" placeholder="Lieu de départ" aria-label="Search">
+                                <input class="form-control" type="date" placeholder="Date de départ" aria-label="date">
+                                <input class="form-control" type="time" placeholder="Heure de départ" aria-label="time">
+                            </div>
+                            <div>
+                                <input class="form-control" type="search" placeholder="Lieu d'arrivée" aria-label="Search">
+                                <input class="form-control" type="date" placeholder="Date d'arrivée" aria-label="date">
+                                <input class="form-control" type="time" placeholder="Heure d'arrivée" aria-label="time">
+                            </div>
+                            <div class="d-flex align-items-center me-5">
+                                <a class="btn btn-primary justify-content-lg-end" href="">Rechercher</a>
+                            </div>
                             </form>
-                            <div class="d-lg-flex col-lg-3 justify-content-lg-end">
+                            <div class="d-lg-flex col-lg-auto justify-content-lg-end">
                                 <button class="btn btn-primary me-3">Connexion</button>
                                 <button class="btn btn-primary">Inscription</button>
                             </div>
