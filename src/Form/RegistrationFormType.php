@@ -45,13 +45,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('nom')
-            ->add('prenom')
-            ->add('telephone')
-            ->add('adresse')
-            ->add('photo', FileType::class)
             ->add('pseudo')
-            ->add('date_naissance')
         ;
     }
 
