@@ -8,21 +8,20 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CovoiturageController extends AbstractController
 {
-    #[Route('/covoiturage/show', name: 'covoiturage_show')]
+    #[Route('/covoiturage', name: 'app_covoiturage')]
     public function index(): Response
     {
-        return $this->render('covoiturage/index.html.twig', []);
+        return $this->render('covoiturage/index.html.twig', [
+            'covoiturages' => 'CovoiturageController',
+        ]);
     }
 
-    #[Route('/covoiturage/search', name: 'covoiturage_search')]
-    public function search($id): Response
+    #[Route('/covoiturage/ajouter', name: 'app_covoiturage_ajouter')]
+    public function ajouter(): Response
     {
-        return $this->render('covoiturage/search.html.twig', []);
+        return $this->render('covoiturage/ajouter.html.twig', [
+            'controller_name' => 'CovoiturageController',
+        ]);
     }
 
-    #[Route('/covoiturage/result', name: 'covoiturage_result_search')]
-    public function resultSearch(): Response
-    {
-        return $this->render('covoiturage/result.html.twig', []);
-    }
 }

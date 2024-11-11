@@ -19,69 +19,12 @@
         {% endblock %}
     </head>
     <body>
-        <style>
-            .example-wrapper {
-                margin: 1em auto;
-                max-width: 800px;
-                width: 100%;
-                font: 18px / 1.5 sans-serif;
-            }
-        </style>
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <div class="container">
-                <nav class="navbar navbar-expand-lg rounded" aria-label="Thirteenth navbar example">
-                    <div class="container-fluid">
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-
-                        <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                                    <a class="navbar-brand col-lg-auto" href="{{ path('index') }}">
-                                <img src="{{ asset('assets/logo-ecoride.webp') }}" class="logo" alt="Logo EcoRide"/>
-                            </a>
-                            <ul class="navbar-nav col-lg-auto justify-content-lg-center">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{{ path('index') }}">Accueil</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('covoiturage_show') }}">Les covoiturages</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('contact') }}">Contact</a>
-                                </li>
-                            </ul>
-                            <form class="d-lg-flex col-lg-auto justify-content-center">
-                            <div class="me-1"> 
-                                <input class="form-control" type="search" placeholder="Lieu de départ" aria-label="Search">
-                                <input class="form-control" type="date" placeholder="Date de départ" aria-label="date">
-                            </div>
-                            <div>
-                                <input class="form-control" type="search" placeholder="Lieu d'arrivée" aria-label="Search">
-                                <input class="form-control" type="date" placeholder="Date d'arrivée" aria-label="date">
-                            </div>
-                            <div class="d-flex align-items-center ms-4 me-5">
-                                <a class="btn btn-primary justify-content-lg-end" href="">Rechercher</a>
-                            </div>
-                            </form>
-                            <div class="d-lg-flex col-lg-auto justify-content-lg-end">
-                                <a class="btn btn-primary me-3" href="{{ path('app_login') }}">Connexion</a>
-                                <a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-                </div>
-            </header>
-        {% block body %}
-        {% endblock %}
+        {{ include('_navbar.html.twig') }}
+        <img src="{{ asset('assets/logo-ecoride.webp') }}" alt="Logo EcoRide"/>
         <div class="container">
-            <footer class="py-3 my-4">
-                <p class="text-center text-body-secondary">© 2024 EcoRide</p>
-                <ul class="nav justify-content-center border-top pb-3 mb-3">
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Mentions légales</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">contact@ecoride.fr</a></li>
-                </ul>
-            </footer>
+            {% block body %}
+            {% endblock %}
         </div>
+        {{ include('_footer.html.twig') }}
     </body>
 </html>
