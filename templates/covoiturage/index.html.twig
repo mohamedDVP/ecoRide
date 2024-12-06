@@ -1,71 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les Covoiturages{% endblock %}
+{% block title %}Les Covoiturages
+{% endblock %}
 
 {% block body %}
-    <h1>Les covoiturages</h1>
-    <p>Retrouvez ici la liste des covoiturages disponibles.</p>
-    <a href="{{ path('app_covoiturage_ajouter') }}">Créer un nouveau covoiturage</a>
-    <div class="mb-4">
-        <form method="get" action="{{ path('app_covoiturage') }}">
-            <div class="form-group">
-                <label for="departure">Lieu de départ</label>
-                <input type="text" id="departure" name="departure" class="form-control" value="{{ app.request.query.get('departure') }}">
-            </div>
-            <div class="form-group">
-                <label for="arrival">Lieu d'arrivée</label>
-                <input type="text" id="arrival" name="arrival" class="form-control" value="{{ app.request.query.get('arrival') }}">
-            </div>
-            <div class="form-group">
-                <label for="departureDate">Date de départ</label>
-                <input type="date" id="departureDate" name="departureDate" class="form-control" value="{{ app.request.query.get('departureDate') }}">
-            </div>
-            <div class="form-group">
-                <label for="arrivalDate">Date d'arrivée</label>
-                <input type="date" id="arrivalDate" name="arrivalDate" class="form-control" value="{{ app.request.query.get('arrivalDate') }}">
-            </div>
-            <button type="submit" class="btn btn-primary">Rechercher</button>
-        </form>
-    </div>
-    <main>
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Lieu de départ</th>
-                                <th>Lieu d'arrivée</th>
-                                <th>Date de départ</th>
-                                <th>Nombre de places</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for covoiturage in covoiturages %}
-                                <tr>
-                                    <td>{{ covoiturage.id }}</td>
-                                    <td>{{ covoiturage.departure }}</td>
-                                    <td>{{ covoiturage.arrival }}</td>
-                                    <td>{{ covoiturage.departureDate|date('d/m/Y') }}</td>
-                                    <td>{{ covoiturage.seats }}</td>
-                                    <td>
-                                        <a href="{{ path('app_covoiturage_show', {'id': covoiturage.id}) }}">Voir</a>
-                                        <a href="{{ path('app_covoiturage_edit', {'id': covoiturage.id}) }}">Modifier</a>
-                                        <a href="{{ path('app_covoiturage_delete', {'id': covoiturage.id}) }}">Supprimer</a>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="6">Aucun covoiturage trouvé.</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-    
+	<h1>Les covoiturages</h1>
+	<p>Retrouvez ici la liste des covoiturages disponibles.</p>
+	<a href="{{ path('app_covoiturage_ajouter') }}">Créer un nouveau covoiturage</a>
+
+	<div class="mb-4">
+		<form method="get" action="{{ path('app_covoiturage') }}">
+			<div class="form-group">
+				<label for="departure">Lieu de départ</label>
+				<input type="text" id="departure" name="departure" class="form-control" value="{{ app.request.query.get('departure') }}">
+			</div>
+			<div class="form-group">
+				<label for="arrival">Lieu d'arrivée</label>
+				<input type="text" id="arrival" name="arrival" class="form-control" value="{{ app.request.query.get('arrival') }}">
+			</div>
+			<div class="form-group">
+				<label for="departureDate">Date de départ</label>
+				<input type="date" id="departureDate" name="departureDate" class="form-control" value="{{ app.request.query.get('departureDate') }}">
+			</div>
+			<div class="form-group">
+				<label for="arrivalDate">Date d'arrivée</label>
+				<input type="date" id="arrivalDate" name="arrivalDate" class="form-control" value="{{ app.request.query.get('arrivalDate') }}">
+			</div>
+			<button type="submit" class="btn btn-primary">Rechercher</button>
+		</form>
+	</div>
+	
+	{% if covoiturages|length > 0 %}
+		{% for covoiturage in covoiturages %}
+			<div class="card mb-3" style="max-width: 540px;">
+				<div class="row g-0">
+					<div class="col-md-4">
+						<img src="..." class="img-fluid rounded-start" alt="...">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							{% for user in covoiturages %}
+							<h5 class="card-title">{{ covoiturages.user.pseudo }}</h5>
+							{% endfor %}
+							<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+							<p class="card-text">
+								<small class="text-body-secondary">Last updated 3 mins ago</small>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p>Aucun covoiturage trouvé.</p>
+	{% endif %}
 {% endblock %}
+

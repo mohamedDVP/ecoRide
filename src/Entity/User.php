@@ -267,14 +267,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addVoiture(Voiture $voiture): static
-    {
-        if (!$this->voitures->contains($voiture)) {
-            $this->voitures->add($voiture);
-            $voiture->setUser($this);
-        }
-
-        return $this;
+{
+    if (!$this->voitures->contains($voiture)) {
+        $this->voitures->add($voiture);
+        $voiture->setUser($this);
     }
+
+    return $this;
+}
+
 
     public function removeVoiture(Voiture $voiture): static
     {
@@ -329,7 +330,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeAvi(Avis $avis): static
+    public function removeAvis(Avis $avis): static
     {
         $this->avis->removeElement($avis);
 

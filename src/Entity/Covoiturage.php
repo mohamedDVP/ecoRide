@@ -17,31 +17,31 @@ class Covoiturage
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date_depart = null;
+    private ?\DateTimeImmutable $dateDepart = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $heure_depart = null;
+    private ?\DateTimeImmutable $heureDepart = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lieu_depart = null;
+    private ?string $lieuDepart = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date_arrivee = null;
+    private ?\DateTimeImmutable $dateArrivee = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $heure_arrivee = null;
+    private ?\DateTimeImmutable $heureArrivee = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lieu_arrivee = null;
+    private ?string $lieuArrivee = null;
 
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
     #[ORM\Column]
-    private ?int $nb_place = null;
+    private ?int $nbPlace = null;
 
     #[ORM\Column]
-    private ?float $prix_personne = null;
+    private ?float $prixPersonne = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     #[ORM\JoinColumn(nullable: false)]
@@ -65,72 +65,72 @@ class Covoiturage
 
     public function getDateDepart(): ?\DateTimeImmutable
     {
-        return $this->date_depart;
+        return $this->dateDepart;
     }
 
     public function setDateDepart(\DateTimeImmutable $date_depart): static
     {
-        $this->date_depart = $date_depart;
+        $this->dateDepart = $date_depart;
 
         return $this;
     }
 
     public function getHeureDepart(): ?\DateTimeImmutable
     {
-        return $this->heure_depart;
+        return $this->heureDepart;
     }
 
     public function setHeureDepart(\DateTimeImmutable $heure_depart): static
     {
-        $this->heure_depart = $heure_depart;
+        $this->heureDepart = $heure_depart;
 
         return $this;
     }
 
     public function getLieuDepart(): ?string
     {
-        return $this->lieu_depart;
+        return $this->lieuDepart;
     }
 
     public function setLieuDepart(string $lieu_depart): static
     {
-        $this->lieu_depart = $lieu_depart;
+        $this->lieuDepart = $lieu_depart;
 
         return $this;
     }
 
     public function getDateArrivee(): ?\DateTimeImmutable
     {
-        return $this->date_arrivee;
+        return $this->dateArrivee;
     }
 
     public function setDateArrivee(\DateTimeImmutable $date_arrivee): static
     {
-        $this->date_arrivee = $date_arrivee;
+        $this->dateArrivee = $date_arrivee;
 
         return $this;
     }
 
     public function getHeureArrivee(): ?\DateTimeImmutable
     {
-        return $this->heure_arrivee;
+        return $this->heureArrivee;
     }
 
     public function setHeureArrivee(\DateTimeImmutable $heure_arrivee): static
     {
-        $this->heure_arrivee = $heure_arrivee;
+        $this->heureArrivee = $heure_arrivee;
 
         return $this;
     }
 
     public function getLieuArrivee(): ?string
     {
-        return $this->lieu_arrivee;
+        return $this->lieuArrivee;
     }
 
     public function setLieuArrivee(string $lieu_arrivee): static
     {
-        $this->lieu_arrivee = $lieu_arrivee;
+        $this->lieuArrivee = $lieu_arrivee;
 
         return $this;
     }
@@ -149,24 +149,24 @@ class Covoiturage
 
     public function getNbPlace(): ?int
     {
-        return $this->nb_place;
+        return $this->nbPlace;
     }
 
     public function setNbPlace(int $nb_place): static
     {
-        $this->nb_place = $nb_place;
+        $this->nbPlace = $nb_place;
 
         return $this;
     }
 
     public function getPrixPersonne(): ?float
     {
-        return $this->prix_personne;
+        return $this->prixPersonne;
     }
 
     public function setPrixPersonne(float $prix_personne): static
     {
-        $this->prix_personne = $prix_personne;
+        $this->prixPersonne = $prix_personne;
 
         return $this;
     }
