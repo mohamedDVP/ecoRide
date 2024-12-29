@@ -29,8 +29,16 @@ class VoitureCrudController extends AbstractCrudController
             TextField::new('energie'),
             TextField::new('couleur'),
             DateField::new('date_premiere_immatriculation'),
-            CollectionField::new(User::class, 'user'),
-            CollectionField::new(Marque::class,'Marque'),
+            AssociationField::new('user')
+                ->setLabel('Utilisateur')
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                ]),
+            AssociationField::new('marque')
+                ->setLabel('Marque')
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                ]),
         ];
     }
     

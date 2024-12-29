@@ -32,7 +32,11 @@ class CovoiturageCrudController extends AbstractCrudController
             TextField::new('statut'),
             IntegerField::new('nbPlace'),
             IntegerField::new('prixPersonne'),
-            AssociationField::new('voiture', 'Voiture'),
+            AssociationField::new('voiture')
+                ->setLabel('Voiture')
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                ]),
         ];
     }
     

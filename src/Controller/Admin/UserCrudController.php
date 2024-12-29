@@ -58,7 +58,7 @@ class UserCrudController extends AbstractCrudController
             
             BooleanField::new('isVerified')
                 ->setLabel('Compte vérifié')
-                ->setFormTypeOption('mapped', true),
+                ->setFormTypeOption('mapped', false),
             
         ];
     }
