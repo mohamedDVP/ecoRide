@@ -53,7 +53,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Voiture','fas fa-car', Voiture::class);
         yield MenuItem::linkToCrud('Marque','fas fa-trademark', Marque::class);
         yield MenuItem::section("Gestion des avis");
-        yield MenuItem::linkToCrud('Avis','fas fa-stars', Avis::class);
+        yield MenuItem::linkToCrud('Avis','fas fa-star', Avis::class);
         yield MenuItem::section('Parametres');
         yield MenuItem::linkToCrud('Configuration','fas fa-sliders', Configuration::class);
         yield MenuItem::linkToCrud('Paramètres','fas fa-gear', Parametre::class);
