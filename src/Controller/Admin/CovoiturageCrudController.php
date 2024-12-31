@@ -3,13 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Covoiturage;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Text;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class CovoiturageCrudController extends AbstractCrudController
@@ -35,9 +34,39 @@ class CovoiturageCrudController extends AbstractCrudController
             AssociationField::new('voiture')
                 ->setLabel('Voiture')
                 ->setFormTypeOptions([
-                    'by_reference' => false,
-                ]),
+                    'by_reference' => false, // Pour éviter que la relation ne soit en lecture seule
+                    'query_builder' => function($repo) {
+                        return $repo->createQueryBuilder('v')
+                            ->orderBy('v.modele', 'ASC');
+                    },
+                    'mapped' => true,
+                ])
         ];
     }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Covoiturage) {
+            $voiture = $entityInstance->getVoiture();
+            if ($voiture && !$entityManager->contains($voiture)) {
+                $entityManager->persist($voiture); // Persister l'entité associée
+            }
+        }
+
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Covoiturage) {
+            $voiture = $entityInstance->getVoiture();
+            if ($voiture === null) {
+                throw new \LogicException('Impossible de modifier le covoiturage sans voiture.');
+            }
+        }
+
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
     
 }

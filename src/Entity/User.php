@@ -224,7 +224,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoto()
+    public function getPhoto(): string
     {
         return $this->photo;
     }

@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
@@ -49,6 +50,11 @@ class UserCrudController extends AbstractCrudController
                 'second_options' => ['label' => '(Repeat)'],
                 'mapped' => true,
             ])->onlyOnForms(),
+            ImageField::new('photo')
+                ->setBasePath('uploads/')
+                ->setUploadDir('public/uploads/user')
+                ->setUploadedFileNamePattern('[randomhash].[extension]')
+                ->setRequired(false),
             TextField::new('nom'),
             TextField::new('prenom'),
             IntegerField::new('telephone'),
