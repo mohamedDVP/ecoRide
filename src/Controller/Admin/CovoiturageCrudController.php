@@ -3,14 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Covoiturage;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 
 class CovoiturageCrudController extends AbstractCrudController
 {
@@ -35,7 +33,7 @@ class CovoiturageCrudController extends AbstractCrudController
             AssociationField::new('voiture', 'Voiture')
                 ->setCrudController(VoitureCrudController::class)
                 ->setFormTypeOptions([
-                    'by_reference' => true, // Utilisation par référence pour ManyToOne
+                    'by_reference' => true,
                 ])
         ];
     }

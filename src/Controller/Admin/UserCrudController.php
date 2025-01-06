@@ -4,20 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\PasswordField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -43,14 +34,16 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             TextField::new("email"),
-            AssociationField::new("role")
-                ->setLabel("Rôles")
+            AssociationField::new('role')
+                ->setLabel('Rôles')
+                ->setCrudController(RoleCrudController::class)
                 ->setFormTypeOptions([
                     'by_reference' => false,
-                    'mapped'=> true,
-                    'multiple' => true,
                 ])
-                ->setCrudController(RoleCrudController::class),
+                ->formatValue(function ($value, $entity) {
+                    /** @var User $entity */
+                    return implode(', ', $entity->getRoles());
+                }),
             TextField::new('plainPassword')
                 ->setFormType(RepeatedType::class)
                 ->setFormTypeOptions([
@@ -62,7 +55,7 @@ class UserCrudController extends AbstractCrudController
             ImageField::new('photo')
                 ->setBasePath('public/uploads/user')
                 ->setUploadDir('public/uploads/user')
-                ->setRequired(false)
+                ->setRequired(true)
                 ->setLabel('Photo de profil')
                 ->setFormTypeOptions([
                     'mapped'=> true,
@@ -83,23 +76,23 @@ class UserCrudController extends AbstractCrudController
     }
 
         public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        $this->handlePassword($entityInstance);
-        parent::persistEntity($entityManager, $entityInstance);
-    }
+        {
+            $this->handlePassword($entityInstance);
+            parent::persistEntity($entityManager, $entityInstance);
+        }
 
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        $this->handlePassword($entityInstance);
-        parent::updateEntity($entityManager, $entityInstance);
-    }
+        public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+        {
+            $this->handlePassword($entityInstance);
+            parent::updateEntity($entityManager, $entityInstance);
+        }
 
-    private function handlePassword(User $user): void
-{
-    if ($user->getPlainPassword()) {
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
-        $user->setPassword($hashedPassword);
-        $user->eraseCredentials(); // Efface le mot de passe en clair après le hachage
-    }
-}
+        private function handlePassword(User $user): void
+        {
+            if ($user->getPlainPassword()) {
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
+                $user->setPassword($hashedPassword);
+                $user->eraseCredentials();
+            }
+        }
 }
