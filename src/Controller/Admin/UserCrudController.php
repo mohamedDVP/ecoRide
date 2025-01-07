@@ -50,6 +50,7 @@ class UserCrudController extends AbstractCrudController
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'Mot de passe'],
                     'second_options' => ['label' => 'Répétez le mot de passe'],
+                    'mapped' => false,
                 ])
                 ->onlyOnForms(),
             ImageField::new('photo')

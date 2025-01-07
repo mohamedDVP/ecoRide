@@ -44,7 +44,7 @@
 									<h5 class="card-title">{{ users.pseudo }}</h5>
 									<div class="photo mb-3">
 										{% if users.getPhoto() %}
-											<img src="{{ users.getPhoto() }}" class="img-fluid rounded-circle" alt="{{ users.pseudo }}'s photo" style="width: 80px; height: 80px; object-fit: cover;">
+											<img src="{{ asset('/uploads/user/' ~ users.getPhoto()) }}" class="img-fluid rounded-circle" alt="{{ users.pseudo }}'s photo" style="width: 80px; height: 80px; object-fit: cover;">
 										{% else %}
 											<img src="{{ asset('/uploads/user/user_default.webp') }}" class="img-fluid rounded-circle" alt="Default photo" style="width: 80px; height: 80px; object-fit: cover;">
 										{% endif %}

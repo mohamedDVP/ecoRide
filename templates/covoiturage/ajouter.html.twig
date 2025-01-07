@@ -1,13 +1,94 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un Covoiturage
+{% block title %}Ajouter un covoiturage
 {% endblock %}
 
 {% block body %}
-	<h1>Ajouter un Covoiturage</h1>
+	<div class="container mt-5">
+		<h1 class="text-center mb-4">Ajouter un Covoiturage</h1>
 
-	{{ form_start(form) }}
-	{{ form_widget(form) }}
-	<button type="submit" class="btn btn-primary">Ajouter</button>
-	{{ form_end(form) }}
+		<div class="card shadow-sm">
+			<div class="card-body">
+				{{ form_start(form) }}
+
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.dateDepart, 'Date de départ') }}
+						{{ form_widget(form.dateDepart, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateDepart) }}
+					</div>
+
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.heureDepart, 'Heure de départ') }}
+						{{ form_widget(form.heureDepart, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.heureDepart) }}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.lieuDepart, 'Lieu de départ') }}
+						{{ form_widget(form.lieuDepart, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.lieuDepart) }}
+					</div>
+
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.lieuArrivee, 'Lieu d’arrivée') }}
+						{{ form_widget(form.lieuArrivee, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.lieuArrivee) }}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.dateArrivee, 'Date d’arrivée') }}
+						{{ form_widget(form.dateArrivee, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateArrivee) }}
+					</div>
+
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.heureArrivee, 'Heure d’arrivée') }}
+						{{ form_widget(form.heureArrivee, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.heureArrivee) }}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.nbPlace, 'Nombre de places') }}
+						{{ form_widget(form.nbPlace, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.nbPlace) }}
+					</div>
+
+					<div class="col-md-6 mb-3">
+						{{ form_label(form.prixPersonne, 'Prix par personne (€)') }}
+						{{ form_widget(form.prixPersonne, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.prixPersonne) }}
+					</div>
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.statut, 'Statut') }}
+					{{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.statut) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.voiture, 'Voiture') }}
+					{{ form_widget(form.voiture, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.voiture) }}
+				</div>
+
+				<div class="text-center">
+					<button type="submit" class="btn btn-primary btn-lg">
+						<i class="fas fa-car"></i>
+						Ajouter
+					</button>
+				</div>
+
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
 {% endblock %}
+
