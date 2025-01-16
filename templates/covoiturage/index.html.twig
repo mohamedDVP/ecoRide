@@ -34,7 +34,7 @@
 	<div class="container">
 		<div class="row">
 			{% for covoiturage in covoiturages %}
-				<div class="col-md-6 mb-4">
+				<div class="col-md-4 mb-4">
 					<div class="card" style="max-width: 400px;">
 						<div
 							class="row">
@@ -44,9 +44,9 @@
 									<h5 class="card-title">{{ users.pseudo }}</h5>
 									<div class="photo mb-3">
 										{% if users.getPhoto() %}
-											<img src="{{ asset('/uploads/user/' ~ users.getPhoto()) }}" class="img-fluid rounded-circle" alt="{{ users.pseudo }}'s photo" style="width: 80px; height: 80px; object-fit: cover;">
+											<img src="{{ asset('uploads/user/' ~ users.getPhoto()) }}" class="img-fluid rounded-circle" alt="{{ users.pseudo }}'s photo" style="width: 80px; height: 80px; object-fit: cover;">
 										{% else %}
-											<img src="{{ asset('/uploads/user/user_default.webp') }}" class="img-fluid rounded-circle" alt="Default photo" style="width: 80px; height: 80px; object-fit: cover;">
+											<img src="{{ asset('uploads/user/user_default.webp') }}" class="img-fluid rounded-circle" alt="Default photo" style="width: 80px; height: 80px; object-fit: cover;">
 										{% endif %}
 									</div>
 									<div class="stars">

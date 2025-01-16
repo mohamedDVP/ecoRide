@@ -54,12 +54,12 @@ class UserCrudController extends AbstractCrudController
                 ])
                 ->onlyOnForms(),
             ImageField::new('photo')
-                ->setBasePath('public/uploads/user')
+                ->setBasePath('/uploads/user')
                 ->setUploadDir('public/uploads/user')
                 ->setRequired(true)
                 ->setLabel('Photo de profil')
                 ->setFormTypeOptions([
-                    'mapped'=> true,
+                    'mapped'=> false,
                 ]),
             TextField::new('nom'),
             TextField::new('prenom'),
@@ -71,7 +71,7 @@ class UserCrudController extends AbstractCrudController
             BooleanField::new('isVerified')
                 ->setLabel('Compte vérifié')
                 ->setFormTypeOptions([
-                    'mapped'=> true,
+                    'mapped'=> false,
             ]),
         ];
     }
