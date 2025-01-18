@@ -33,52 +33,43 @@ class UserCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new("email"),
+            TextField::new("email")->setLabel('Email'),
             AssociationField::new('role')
                 ->setLabel('Rôles')
                 ->setCrudController(RoleCrudController::class)
                 ->setFormTypeOptions([
                     'by_reference' => false,
-                ])
-                ->formatValue(function ($value, $entity) {
-                    /** @var User $entity */
-                    return implode(', ', $entity->getRoles());
-                }),
+                    'multiple' => true,
+                ]),
             TextField::new('plainPassword')
                 ->setFormType(RepeatedType::class)
                 ->setFormTypeOptions([
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'Mot de passe'],
                     'second_options' => ['label' => 'Répétez le mot de passe'],
-                    'mapped' => false,
+                    'mapped' => false, // Indique que ce champ n'est pas directement lié à l'entité User
                 ])
                 ->onlyOnForms(),
             ImageField::new('photo')
-                ->setBasePath('public/uploads/user')
+                ->setBasePath('uploads/user')
                 ->setUploadDir('public/uploads/user')
-                ->setRequired(true)
-                ->setLabel('Photo de profil')
-                ->setFormTypeOptions([
-                    'mapped'=> true,
-                ]),
-            TextField::new('nom'),
-            TextField::new('prenom'),
-            TelephoneField::new('telephone'),
-            TextField::new('adresse'),
-            TextField::new('pseudo'),
-            DateField::new('dateNaissance'),
-            
+                ->setRequired(false)
+                ->setLabel('Photo de profil'),
+            TextField::new('nom')->setLabel('Nom'),
+            TextField::new('prenom')->setLabel('Prénom'),
+            TelephoneField::new('telephone')->setLabel('Téléphone'),
+            TextField::new('adresse')->setLabel('Adresse'),
+            TextField::new('pseudo')->setLabel('Pseudo'),
+            DateField::new('dateNaissance')->setLabel('Date de naissance'),
             BooleanField::new('isVerified')
-                ->setLabel('Compte vérifié')
-                ->setFormTypeOptions([
-                    'mapped'=> true,
-            ]),
+                ->setLabel('Compte vérifié'),
         ];
     }
 
         public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
         {
             $this->handlePassword($entityInstance);
+            dump($entityInstance);
             parent::persistEntity($entityManager, $entityInstance);
         }
 
@@ -90,10 +81,15 @@ class UserCrudController extends AbstractCrudController
 
         private function handlePassword(User $user): void
         {
+            // Vérifier si le mot de passe est défini dans le formulaire
             if ($user->getPlainPassword()) {
+                // Si un mot de passe est fourni, on le hache
                 $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
                 $user->setPassword($hashedPassword);
-                $user->eraseCredentials();
+                $user->eraseCredentials(); // Supprime les informations sensibles
+            } elseif (!$user->getPassword()) {
+                // Si aucun mot de passe n'est fourni, on lève une exception pour signaler un problème
+                throw new \Exception("Le mot de passe est requis.");
             }
         }
 }

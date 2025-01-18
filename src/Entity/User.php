@@ -34,10 +34,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(length:255, type: 'string')]
+    #[Assert\NotBlank(groups: ['registration'], message: 'Le mot de passe est obligatoire.')]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration'], message: 'Le mot de passe est obligatoire.')]
     private ?string $plainPassword = null;
 
 
@@ -73,6 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Covoiturage>
      */
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_covoiturage')]
     private Collection $covoiturage;
 
     /**
@@ -164,7 +166,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
@@ -176,7 +178,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): static
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 

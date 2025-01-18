@@ -34,7 +34,14 @@ class CovoiturageCrudController extends AbstractCrudController
                 ->setCrudController(VoitureCrudController::class)
                 ->setFormTypeOptions([
                     'by_reference' => true,
-                ])
+                ]),
+            AssociationField::new('users')
+                ->setLabel('Utilisateur')
+                ->setCrudController(UserCrudController::class)
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                    'multiple' => true,
+                ]),
         ];
     }
 
