@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use phpDocumentor\Reflection\Types\Nullable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -34,12 +35,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column(length:255, type: 'string')]
-    #[Assert\NotBlank(groups: ['registration'], message: 'Le mot de passe est obligatoire.')]
+    #[ORM\Column(length:255, type: 'string', nullable: false)]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['registration'], message: 'Le mot de passe est obligatoire.')]
-    private ?string $plainPassword = null;
+
+/*     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire lors de l\'inscription.')]
+ */    private ?string $plainPassword = null;
 
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -168,6 +169,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): self
     {
+        /* if (empty($password)) {
+            throw new \InvalidArgumentException("Le mot de passe ne peut pas être vide.");
+        } */
+
         $this->password = $password;
 
         return $this;
