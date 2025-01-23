@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $roles = [];
 
     /**
@@ -88,6 +88,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Role>
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_role')]
+
     private Collection $role;
 
     /**
@@ -142,15 +144,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = $this->role->map(function (Role $role) {
+            return $role->getLibelle();  // ou 'getName()' si vous préférez
+        })->toArray();
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return $roles;
     }
 
     /**
-     * @param list<string> $roles
+     * @see UserInterface
+     *
+     * list<string> $roles
      */
     public function setRoles(array $roles): static
     {
@@ -373,7 +379,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addRole(Role $role): static
     {
         if (!$this->role->contains($role)) {
-            $this->role->add($role);
+            $this->role[] = $role;
         }
 
         return $this;

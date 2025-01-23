@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -40,21 +41,24 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             TextField::new("email")->setLabel('Email'),
-            AssociationField::new('role')
-                ->setLabel('Rôles')
-                ->setCrudController(RoleCrudController::class)
+            ArrayField::new('roles')->onlyOnIndex(),
+            AssociationField::new('role') // Utilise 'role' pour la relation ManyToMany avec Role
+                ->setCrudController(RoleCrudController::class) // Assurez-vous que RoleCrudController est défini
                 ->setFormTypeOptions([
-                    'by_reference' => false,
-                    'multiple' => true,
-                ]),
+                    'choice_label' => 'libelle', // Utilisez 'libelle' si c'est le nom du rôle
+                    'by_reference' => false,  // Important, il faut éviter le passage par référence
+                    'multiple' => true, // Permet la sélection multiple
+                    'expanded' => true, // Si vous voulez des cases à cocher pour les rôles
+                ])
+                ->setLabel('Rôles'),
             TextField::new('plainPassword')
                 ->setFormType(RepeatedType::class)
                 ->setFormTypeOptions([
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'Mot de passe'],
-                    'second_options' => ['label' => 'Confirmer le mot de passe'],
-                    //'mapped' => false, // Indique que ce champ n'est pas lié à Doctrine
-                    'required' => $pageName === Crud::PAGE_NEW, // Requis uniquement pour l'ajout
+                    'second_options' => ['label' => 'Répétez le mot de passe'],
+                    'mapped' => false, // Indique que ce champ n'est pas directement lié à l'entité User
+                    'required' => $pageName === 'new',
                 ])
                 ->onlyOnForms(),
             ImageField::new('photo')
@@ -73,42 +77,21 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        // Hachage du mot de passe avant la persistance
-        $this->handlePassword($entityInstance);
-        parent::persistEntity($entityManager, $entityInstance);
-    }
-
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $this->handlePassword($entityInstance);
         parent::updateEntity($entityManager, $entityInstance);
     }
-
     private function handlePassword(User $user): void
     {
-        // Vérifiez si un mot de passe est fourni
+        // Si un mot de passe brut est défini, on le hache
         if ($user->getPlainPassword()) {
-            // Valider le mot de passe
-            $errors = $this->validator->validate($user, null);
-            
-            // Si des erreurs existent, les afficher
-            if (count($errors) > 0) {
-                $errorMessage = '';
-                foreach ($errors as $error) {
-                    $errorMessage .= $error->getPropertyPath() . ': ' . $error->getMessage() . "\n";
-                }
-                throw new \RuntimeException($errorMessage);
-            }
-
-            // Hachage du mot de passe si tout est valide
             $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
             $user->setPassword($hashedPassword);
-            $user->eraseCredentials(); // Efface le plainPassword pour éviter les fuites
-        } else {
-            // Si aucun mot de passe n'est fourni, lever une exception pour indiquer que le mot de passe est requis
-            throw new \Exception("Le mot de passe est requis.");
+            $user->eraseCredentials();
+        } elseif (!$user->getPassword()) {
+            // Si aucun mot de passe n'est défini (nouvel utilisateur), on lève une exception
+            throw new \RuntimeException("Le mot de passe est requis.");
         }
     }
 }
