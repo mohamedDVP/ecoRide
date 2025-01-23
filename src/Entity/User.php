@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use phpDocumentor\Reflection\Types\Nullable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -28,17 +29,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(length:255, type: 'string', nullable: false)]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['registration'])]
-    private ?string $plainPassword = null;
+
+/*     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire lors de l\'inscription.')]
+ */    private ?string $plainPassword = null;
 
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -73,6 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Covoiturage>
      */
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_covoiturage')]
     private Collection $covoiturage;
 
     /**
@@ -85,6 +88,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Role>
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_role')]
+
     private Collection $role;
 
     /**
@@ -139,7 +144,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = $this->role->map(function (Role $role) {
+            return $role->getLibelle();
+        })->toArray();
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
@@ -147,7 +154,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param list<string> $roles
+     * @see UserInterface
+     *
+     * list<string> $roles
      */
     public function setRoles(array $roles): static
     {
@@ -164,8 +173,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
+        /* if (empty($password)) {
+            throw new \InvalidArgumentException("Le mot de passe ne peut pas être vide.");
+        } */
+
         $this->password = $password;
 
         return $this;
@@ -176,7 +189,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): static
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
@@ -366,7 +379,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addRole(Role $role): static
     {
         if (!$this->role->contains($role)) {
-            $this->role->add($role);
+            $this->role[] = $role;
         }
 
         return $this;
