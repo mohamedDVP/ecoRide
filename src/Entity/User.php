@@ -145,12 +145,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->role->map(function (Role $role) {
-            return $role->getLibelle();  // ou 'getName()' si vous préférez
+            return $role->getLibelle();
         })->toArray();
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return $roles;
+        return array_unique($roles);
     }
 
     /**
