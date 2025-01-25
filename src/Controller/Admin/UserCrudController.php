@@ -36,7 +36,43 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
-    
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        // Hachage du mot de passe avant la persistance
+        $this->handlePassword($entityInstance);
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->handlePassword($entityInstance);
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    private function handlePassword(User $user): void
+    {
+        // Vérifiez si un mot de passe est fourni
+        if ($user->getPlainPassword()) {
+            // Valider le mot de passe
+            $errors = $this->validator->validate($user, null);
+
+            // Si des erreurs existent, les afficher
+            if (count($errors) > 0) {
+                $errorMessage = '';
+                foreach ($errors as $error) {
+                    $errorMessage .= $error->getPropertyPath() . ': ' . $error->getMessage() . "\n";
+                }
+                throw new \RuntimeException($errorMessage);
+            }
+            // Hachage du mot de passe si tout est valide
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
+            $user->setPassword($hashedPassword);
+            $user->eraseCredentials(); // Efface le plainPassword pour éviter les fuites
+        } else {
+            // Si aucun mot de passe n'est fourni, lever une exception pour indiquer que le mot de passe est requis
+            throw new \Exception("Le mot de passe est requis.");
+        }
+    }
+
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -54,9 +90,9 @@ class UserCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'Mot de passe'],
-                    'second_options' => ['label' => 'Répétez le mot de passe'],
-                    'mapped' => false, // Indique que ce champ n'est pas directement lié à l'entité User
-                    'required' => $pageName === 'new',
+                    'second_options' => ['label' => 'Confirmer le mot de passe'],
+                    //'mapped' => false, // Indique que ce champ n'est pas lié à Doctrine
+                    'required' => $pageName === Crud::PAGE_NEW, // Requis uniquement pour l'ajout
                 ])
                 ->onlyOnForms(),
             ImageField::new('photo')
@@ -75,21 +111,5 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        $this->handlePassword($entityInstance);
-        parent::updateEntity($entityManager, $entityInstance);
-    }
-    private function handlePassword(User $user): void
-    {
-        // Si un mot de passe brut est défini, on le hache
-        if ($user->getPlainPassword()) {
-            $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPlainPassword());
-            $user->setPassword($hashedPassword);
-            $user->eraseCredentials();
-        } elseif (!$user->getPassword()) {
-            // Si aucun mot de passe n'est défini (nouvel utilisateur), on lève une exception
-            throw new \RuntimeException("Le mot de passe est requis.");
-        }
-    }
+
 }
