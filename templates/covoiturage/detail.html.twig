@@ -13,7 +13,7 @@
         <li class="list-group-item"><strong>Prix :</strong> {{ covoiturage.getPrixPersonne() }} pièces</li>
         <li class="list-group-item"><strong>Places disponibles :</strong> {{ covoiturage.getNbPlace() }}</li>
         {% for user in covoiturage.users %}
-            <li class="list-group-item"><strong>Nom : </strong>{{ user.nom }} - <strong>Prénom : </strong> {{ user.prenom }} </li>
+            <li class="list-group-item"><strong>Pseudo : </strong> {{ user.pseudo }}</li>
         {% else %}
             <li class="list-group-item">Aucun utilisateur inscrit</li>
         {% endfor %}
