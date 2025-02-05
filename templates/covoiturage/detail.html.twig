@@ -8,8 +8,8 @@
     <ul class="list-group">
         <li class="list-group-item"><strong>Départ :</strong> {{ covoiturage.getLieuDepart() }}</li>
         <li class="list-group-item"><strong>Arrivée :</strong> {{ covoiturage.getLieuArrivee() }}</li>
-        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateDepart()|date('d/m/Y H:i') }}</li>
-        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateArrivee()|date('d/m/Y H:i') }}</li>
+        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateDepart()|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}</li>
+        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateArrivee()|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}</li>
         <li class="list-group-item"><strong>Prix :</strong> {{ covoiturage.getPrixPersonne() }} pièces</li>
         <li class="list-group-item"><strong>Places disponibles :</strong> {{ covoiturage.getNbPlace() }}</li>
         {% for user in covoiturage.users %}
@@ -17,6 +17,7 @@
         {% else %}
             <li class="list-group-item">Aucun utilisateur inscrit</li>
         {% endfor %}
+
     </ul>
 
     <a href="{{ path('covoiturage_liste') }}">Retour à la liste</a>
