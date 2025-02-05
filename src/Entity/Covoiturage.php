@@ -209,4 +209,9 @@ class Covoiturage
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->lieuDepart . ' (' .$this->dateDepart->format('d/m/Y') .' → ' . $this->lieuArrivee . ' (' . $this->dateArrivee->format('d/m/Y') . ')';
+    }
 }

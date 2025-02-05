@@ -24,8 +24,6 @@ class CovoiturageController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/covoiturage/ajouter', name: 'app_covoiturage_ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -73,6 +71,21 @@ class CovoiturageController extends AbstractController
 
         return $this->render('covoiturage/list.html.twig', [
             'covoiturages' => $covoiturages,
+        ]);
+    }
+
+
+    #[Route('/covoiturage/{id}', name: 'covoiturage_detail', requirements: ['id' => '\d+'])]
+    public function show(int $id, CovoiturageRepository $repo): Response
+    {
+        $covoiturage = $repo->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Ce covoiturage n\'existe pas.');
+        }
+
+        return $this->render('covoiturage/detail.html.twig', [
+            'covoiturage' => $covoiturage,
         ]);
     }
 

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du Covoiturage{% endblock %}
+
+{% block body %}
+    <h1>Détails du Covoiturage</h1>
+
+    <ul class="list-unstyled">
+        <li><strong>Départ :</strong> {{ covoiturage.getLieuDepart() }}</li>
+        <li><strong>Arrivée :</strong> {{ covoiturage.getLieuArrivee() }}</li>
+        <li><strong>Date :</strong> {{ covoiturage.getDateDepart()|date('d/m/Y H:i') }}</li>
+        <li><strong>Date :</strong> {{ covoiturage.getDateArrivee()|date('d/m/Y H:i') }}</li>
+        <li><strong>Prix :</strong> {{ covoiturage.getPrixPersonne() }} pièces</li>
+        <li><strong>Places disponibles :</strong> {{ covoiturage.getNbPlace() }}</li>
+        {% for user in covoiturage.users %}
+            <li><strong>Nom : </strong>{{ user.nom }} - <strong>Prénom : </strong> {{ user.prenom }} </li>
+        {% else %}
+            <li>Aucun utilisateur inscrit</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('covoiturage_liste') }}">Retour à la liste</a>
+{% endblock %}
