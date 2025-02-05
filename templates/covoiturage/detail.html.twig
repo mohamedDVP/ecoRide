@@ -17,7 +17,9 @@
         {% else %}
             <li class="list-group-item">Aucun utilisateur inscrit</li>
         {% endfor %}
-
+        <div>
+            <a class="btn btn-primary" href="{{ path('app_register') }}">Séléctionner</a>
+        </div>
     </ul>
 
     <a href="{{ path('covoiturage_liste') }}">Retour à la liste</a>
