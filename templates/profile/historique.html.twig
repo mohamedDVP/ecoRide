@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des Covoiturages{% endblock %}
+
+{% block body %}
+    <h1>Historique des covoiturages</h1>
+
+    <ul>
+        {% for covoiturage in covoiturages %}
+            <li>{{ covoiturage.someProperty }}</li> {# Affiche des propriétés de chaque covoiturage #}
+        {% else %}
+            <li>Aucun covoiturage trouvé.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

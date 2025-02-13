@@ -43,7 +43,7 @@ class Covoiturage
     #[ORM\Column]
     private ?float $prixPersonne = null;
 
-    #[ORM\ManyToOne(targetEntity:Voiture::class, inversedBy: 'covoiturages')]
+    #[ORM\ManyToOne(targetEntity:Voiture::class, inversedBy: 'covoiturage')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Voiture $voiture = null;
 
@@ -191,7 +191,7 @@ class Covoiturage
         return $this->users;
     }
 
-    public function addUser(User $user): static
+    public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
@@ -201,7 +201,7 @@ class Covoiturage
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
             $user->removeCovoiturage($this);
@@ -209,6 +209,7 @@ class Covoiturage
 
         return $this;
     }
+
 
     public function __toString(): string
     {

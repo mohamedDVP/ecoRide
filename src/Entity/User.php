@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private $photo = null;
 
     #[ORM\Column(length: 255)]
@@ -77,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_covoiturage')]
-    private Collection $covoiturage;
+    private Collection $covoiturages;
 
     /**
      * @var Collection<int, Avis>
@@ -90,7 +90,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role')]
-
     private Collection $role;
 
     /**
@@ -102,10 +101,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\Column]
+    private ?int $credits = 20;
+
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
-        $this->covoiturage = new ArrayCollection();
+        $this->covoiturages = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->role = new ArrayCollection();
         $this->configurations = new ArrayCollection();
@@ -145,12 +147,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->role->map(function (Role $role) {
-            return $role->getLibelle();
-        })->toArray();
-        // guarantee every user at least has ROLE_USER
+        // Assurez-vous que chaque utilisateur a au moins ROLE_USER
+        $roles = $this->roles;
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
@@ -326,24 +325,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getCovoiturage(): Collection
     {
-        return $this->covoiturage;
+        return $this->covoiturages;
     }
 
-    public function addCovoiturage(Covoiturage $covoiturage): static
+    // Méthode pour ajouter un covoiturage
+    public function addCovoiturage(Covoiturage $covoiturage): self
     {
-        if (!$this->covoiturage->contains($covoiturage)) {
-            $this->covoiturage->add($covoiturage);
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
         }
 
         return $this;
     }
 
-    public function removeCovoiturage(Covoiturage $covoiturage): static
+    public function removeCovoiturage(Covoiturage $covoiturage): self
     {
-        $this->covoiturage->removeElement($covoiturage);
+        $this->covoiturages->removeElement($covoiturage);
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Avis>
@@ -438,5 +439,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __tostring(): string
     {
         return $this->nom . ' ' . $this->prenom;
+    }
+
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): static
+    {
+        $this->credits = $credits;
+
+        return $this;
     }
 }

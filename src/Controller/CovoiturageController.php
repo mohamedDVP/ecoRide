@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Covoiturage;
+use App\Entity\User;
 use App\Form\CovoiturageType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CovoiturageRepository;
@@ -10,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CovoiturageController extends AbstractController
 {
@@ -88,5 +91,23 @@ class CovoiturageController extends AbstractController
             'covoiturage' => $covoiturage,
         ]);
     }
+
+    public function historique(CovoiturageRepository $covoiturageRepository, UserInterface $user): Response
+    {
+        // Vérifier si l'utilisateur est bien connecté (utile si tu veux renforcer la sécurité)
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+
+        // Récupérer l'historique des covoiturages où l'utilisateur est impliqué
+        // Ici, on suppose que l'entité Covoiturage a une relation "ManyToMany" avec User
+        $covoiturages = $covoiturageRepository->findByUser($user);
+
+        // Retourner la vue avec l'historique des covoiturages
+        return $this->render('covoiturage/historique.html.twig', [
+            'covoiturages' => $covoiturages, // Liste des covoiturages
+        ]);
+    }
+
 
 }

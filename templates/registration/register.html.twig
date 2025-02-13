@@ -33,9 +33,51 @@
 	</div>
 
 	<div class="mb-3">
+		{{ form_row(registrationForm.nom, {
+			label: 'Nom',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
+		{{ form_row(registrationForm.prenom, {
+			label: 'Prenom',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
+		{{ form_row(registrationForm.telephone, {
+			label: 'Téléphone',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
+		{{ form_row(registrationForm.adresse, {
+			label: 'Adresse',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
+		{{ form_row(registrationForm.dateNaissance, {
+			label: 'Date de naissance',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
+		{{ form_row(registrationForm.photo, {
+			label: 'Date de naissance',
+			attr: {'class': 'form-control'}
+		}) }}
+	</div>
+
+	<div class="mb-3">
 		{{ form_row(registrationForm.agreeTerms, {
-                label: 'Accepter les termes et conditions'
-            }) }}
+			label: 'Accepter les termes et conditions'
+		}) }}
 	</div>
 
 	<div class="text-center">

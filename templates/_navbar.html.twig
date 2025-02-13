@@ -35,11 +35,43 @@
 						</div>
 					</form>
 					<div class="d-lg-flex col-lg-auto justify-content-lg-end">
-						<a class="btn btn-primary me-3" href="{{ path('app_login') }}">Connexion</a>
-						<a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
+						{% if app.user %}
+							<ul class="navbar-nav">
+								{% if is_granted('ROLE_USER') %}
+									<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+											Profil
+										</a>
+										<ul class="dropdown-menu" aria-labelledby="profileDropdown">
+											<li><a class="dropdown-item" href="{{ path('app_profile') }}">Mon profil</a></li>
+											<li><a class="dropdown-item" href="{{ path('app_profil_historique') }}">Mon historique</a></li>
+										</ul>
+									</li>
+								{% endif %}
+
+								{% if is_granted('ROLE_ADMIN') %}
+									<li class="nav-item">
+										<a class="nav-link" href="{{ path('admin') }}">Admin</a>
+									</li>
+								{% endif %}
+
+								<li class="nav-item">
+									<a class="btn btn-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+								</li>
+							</ul>
+						{% else %}
+							<a class="btn btn-primary me-3" href="{{ path('app_login') }}">Connexion</a>
+							<a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
+						{% endif %}
 					</div>
 				</div>
 			</div>
 		</nav>
 	</div>
 </header>
+
+
+
+
+
+

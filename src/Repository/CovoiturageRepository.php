@@ -4,6 +4,8 @@ namespace App\Repository;
 use App\Entity\Covoiturage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class CovoiturageRepository extends ServiceEntityRepository
 {
@@ -62,5 +64,32 @@ class CovoiturageRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function historique(CovoiturageRepository $covoiturageRepository, UserInterface $user): Response
+    {
+        // Requête personnalisée avec QueryBuilder
+        $query = $covoiturageRepository->createQueryBuilder('c')
+            ->innerJoin('c.users', 'u') // Jointure avec la table des utilisateurs
+            ->where('u.id = :userId') // Condition pour filtrer par utilisateur
+            ->setParameter('userId', $user->getId()) // Passer l'ID de l'utilisateur
+            ->getQuery();
+
+        // Exécuter la requête et récupérer les résultats
+        $covoiturages = $query->getResult();
+
+        return $this->render('covoiturage/historique.html.twig', [
+            'covoiturages' => $covoiturages,
+        ]);
+    }
+
+    public function findByUser(UserInterface $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.users', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getResult();
     }
 }

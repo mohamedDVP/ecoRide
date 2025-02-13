@@ -45,3 +45,4 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }  # restreindre l'accès à la route /admin pour les administrateurs
         - { path: ^/profile, roles: ROLE_USER } # restreindre l'accès à la route /profile pour les utilisateurs connectés
+
