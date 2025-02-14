@@ -55,9 +55,14 @@ class ProfileController extends AbstractController
     public function historique(CovoiturageRepository $covoiturageRepository, UserInterface $user): Response
     {
         // Récupérer l'historique des covoiturages de l'utilisateur connecté
-        $covoiturages = $covoiturageRepository->findBy(['user' => $user]);
+        $covoiturages = $covoiturageRepository->createQueryBuilder('c')
+            ->innerJoin('c.users', 'u')
+            ->where('u = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('profil/historique.html.twig', [
+        return $this->render('profile/historique.html.twig', [
             'covoiturages' => $covoiturages,
         ]);
     }

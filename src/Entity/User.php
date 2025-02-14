@@ -333,8 +333,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->covoiturages->contains($covoiturage)) {
             $this->covoiturages->add($covoiturage);
+            $covoiturage->addUser($this);
         }
-
         return $this;
     }
 
@@ -449,6 +449,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCredits(int $credits): static
     {
         $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        $this->avis->removeElement($avi);
 
         return $this;
     }

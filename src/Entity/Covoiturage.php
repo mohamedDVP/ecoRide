@@ -50,7 +50,7 @@ class Covoiturage
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturage')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturages')]
     private Collection $users;
 
     public function __construct()
