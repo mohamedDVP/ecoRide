@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile!{% endblock %}
+
+{% block body %}
+    <h1>Bienvenue sur votre profil, {{ app.user.nom }}</h1>
+
+    {% if app.user.credits is not null %}
+        <p>Vous avez {{ app.user.credits }} crédits.</p>
+    {% else %}
+        <p>Vous n'avez pas encore de crédits.</p>
+    {% endif %}
+
+    {% if is_granted('ROLE_CONDUCTEUR') %}
+        <p>Vous êtes conducteur.</p>
+        <button id="switch-role" data-role="passager">Devenir passager</button>
+    {% else %}
+        <p>Vous êtes passager.</p>
+        <button id="switch-role" data-role="conducteur">Devenir conducteur</button>
+    {% endif %}
+
+    <script>
+        document.getElementById('switch-role').addEventListener('click', function () {
+            let newRole = this.getAttribute('data-role');
+            if (confirm("Voulez-vous vraiment devenir " + newRole + " ?")) {
+                fetch('{{ path("app_switch_role") }}', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify({ role: newRole })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Votre rôle a été mis à jour !");
+                            location.reload();
+                        } else {
+                            alert("Une erreur s'est produite.");
+                        }
+                    });
+            }
+        });
+    </script>
+
+{% endblock %}

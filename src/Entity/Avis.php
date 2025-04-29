@@ -92,7 +92,7 @@ class Avis
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addAvi($this);
+            $user->addAvis($this);
         }
 
         return $this;
@@ -101,7 +101,7 @@ class Avis
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            $user->removeAvi($this);
+            $user->removeAvis($this);
         }
 
         return $this;

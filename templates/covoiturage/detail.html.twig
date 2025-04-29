@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du Covoiturage{% endblock %}
+
+{% block body %}
+    <h1>Détails du Covoiturage</h1>
+
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Départ :</strong> {{ covoiturage.getLieuDepart() }}</li>
+        <li class="list-group-item"><strong>Arrivée :</strong> {{ covoiturage.getLieuArrivee() }}</li>
+        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateDepart()|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}</li>
+        <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateArrivee()|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}</li>
+        <li class="list-group-item"><strong>Prix :</strong> {{ covoiturage.getPrixPersonne() }} pièces</li>
+        <li class="list-group-item"><strong>Places disponibles :</strong> {{ covoiturage.getNbPlace() }}</li>
+        {% for user in covoiturage.users %}
+            <li class="list-group-item"><strong>Pseudo : </strong> {{ user.pseudo }}</li>
+        {% else %}
+            <li class="list-group-item">Aucun utilisateur inscrit</li>
+        {% endfor %}
+        <div>
+            <a class="btn btn-primary" href="{{ path('app_register') }}">Séléctionner</a>
+        </div>
+    </ul>
+
+    <a href="{{ path('covoiturage_liste') }}">Retour à la liste</a>
+{% endblock %}

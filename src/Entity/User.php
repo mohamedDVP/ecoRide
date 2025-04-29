@@ -2,15 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Assert\Length;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use phpDocumentor\Reflection\Types\Nullable;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -27,16 +29,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(length:255, type: 'string', nullable: false)]
+    //#[Assert\NotBlank]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+
+/*     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire lors de l\'inscription.')]
+ */    private ?string $plainPassword = null;
+
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Length(max:255, maxMessage: 'Le nom ne doit pas dépasser {{ limit }} caractères')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
@@ -48,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(type: Types::BLOB)]
+    #[ORM\Column(length: 255, nullable: true)]
     private $photo = null;
 
     #[ORM\Column(length: 255)]
@@ -67,7 +76,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Covoiturage>
      */
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
-    private Collection $covoiturage;
+    #[ORM\JoinTable(name: 'user_covoiturage')]
+    private Collection $covoiturages;
 
     /**
      * @var Collection<int, Avis>
@@ -79,6 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Role>
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_role')]
     private Collection $role;
 
     /**
@@ -90,10 +101,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\Column]
+    private ?int $credits = 20;
+
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
-        $this->covoiturage = new ArrayCollection();
+        $this->covoiturages = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->role = new ArrayCollection();
         $this->configurations = new ArrayCollection();
@@ -133,15 +147,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
+        // Assurez-vous que chaque utilisateur a au moins ROLE_USER
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
     /**
-     * @param list<string> $roles
+     * @see UserInterface
+     *
+     * list<string> $roles
      */
     public function setRoles(array $roles): static
     {
@@ -158,9 +173,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
+        /* if (empty($password)) {
+            throw new \InvalidArgumentException("Le mot de passe ne peut pas être vide.");
+        } */
+
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -171,7 +202,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -222,7 +253,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoto()
+    public function getPhoto(): string
     {
         return $this->photo;
     }
@@ -267,14 +298,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function addVoiture(Voiture $voiture): static
-    {
-        if (!$this->voitures->contains($voiture)) {
-            $this->voitures->add($voiture);
-            $voiture->setUser($this);
-        }
-
-        return $this;
+{
+    if (!$this->voitures->contains($voiture)) {
+        $this->voitures->add($voiture);
+        $voiture->setUser($this);
     }
+
+    return $this;
+}
+
 
     public function removeVoiture(Voiture $voiture): static
     {
@@ -293,24 +325,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getCovoiturage(): Collection
     {
-        return $this->covoiturage;
+        return $this->covoiturages;
     }
 
-    public function addCovoiturage(Covoiturage $covoiturage): static
+    // Méthode pour ajouter un covoiturage
+    public function addCovoiturage(Covoiturage $covoiturage): self
     {
-        if (!$this->covoiturage->contains($covoiturage)) {
-            $this->covoiturage->add($covoiturage);
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->addUser($this);
         }
-
         return $this;
     }
 
-    public function removeCovoiturage(Covoiturage $covoiturage): static
+    public function removeCovoiturage(Covoiturage $covoiturage): self
     {
-        $this->covoiturage->removeElement($covoiturage);
+        $this->covoiturages->removeElement($covoiturage);
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Avis>
@@ -320,18 +354,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->avis;
     }
 
-    public function addAvi(Avis $avi): static
+    public function addAvis(Avis $avis): static
     {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
+        if (!$this->avis->contains($avis)) {
+            $this->avis->add($avis);
         }
 
         return $this;
     }
 
-    public function removeAvi(Avis $avi): static
+    public function removeAvis(Avis $avis): static
     {
-        $this->avis->removeElement($avi);
+        $this->avis->removeElement($avis);
 
         return $this;
     }
@@ -347,7 +381,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addRole(Role $role): static
     {
         if (!$this->role->contains($role)) {
-            $this->role->add($role);
+            $this->role[] = $role;
         }
 
         return $this;
@@ -398,6 +432,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function __tostring(): string
+    {
+        return $this->nom . ' ' . $this->prenom;
+    }
+
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): static
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        $this->avis->removeElement($avi);
 
         return $this;
     }

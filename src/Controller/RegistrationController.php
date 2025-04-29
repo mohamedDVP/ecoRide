@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -28,6 +30,9 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
+        $user->setRoles(['ROLE_USER']); // Assigner des rôles à l'utilisateur
+
+
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -37,6 +42,21 @@ class RegistrationController extends AbstractController
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            /** @var UploadedFile $photoFile */
+            $photoFile = $form->get('photo')->getData();
+
+            if ($photoFile) {
+                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photo_directory'),  // Répertoire où les photos sont stockées
+                        $newFilename
+                    );
+                    $user->setPhoto($newFilename);
+                } catch (FileException $e) {
+                    // gérer l'exception si une erreur se produit lors de l'upload
+                }
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -79,6 +99,6 @@ class RegistrationController extends AbstractController
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('app_home');
     }
 }

@@ -4,13 +4,14 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
@@ -46,6 +47,27 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('pseudo')
+            ->add('nom')
+            ->add('prenom')
+            ->add('adresse')
+            ->add('telephone')
+            ->add('photo', FileType::class, [
+                'label' => 'Photo (JPG, PNG, ...)',
+                'mapped' => false, // Pas de liaison avec la base de données directement
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPG, PNG, GIF)',
+                    ])
+                ],
+                'required' => false, // Si la photo est optionnelle
+            ])
+            ->add('dateNaissance', DateType::class, [
+                'widget' => 'single_text', // Affiche un champ de saisie de type date
+                'attr' => ['class' => 'form-control'],
+                'label' => 'Date de naissance',
+                ])
         ;
     }
 

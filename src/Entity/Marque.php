@@ -68,11 +68,17 @@ class Marque
     {
         if ($this->voitures->removeElement($voiture)) {
             // set the owning side to null (unless already changed)
-            if ($voiture->getMarque() === $this) {
+            if ($voiture->getMarque() === $this) 
+            {
                 $voiture->setMarque(null);
             }
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle;
     }
 }
