@@ -1,7 +1,4 @@
-# config/packages/security.yaml
-
 security:
-    # Configuration de l'encodage de mot de passe
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
