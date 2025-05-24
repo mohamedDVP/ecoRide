@@ -44,18 +44,63 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException('Vous devez être connecté pour effectuer cette action.');
         }
 
-        $role = $roleRepo->findOneBy(['libelle' => 'ROLE_CONDUCTEUR']);
-        if (!$role) {
+        $roleConducteur = $roleRepo->findOneBy(['libelle' => 'ROLE_CONDUCTEUR']);
+        $rolePassager = $roleRepo->findOneBy(['libelle' => 'ROLE_PASSAGER']);
+
+        if (!$roleConducteur) {
             throw $this->createNotFoundException("Le rôle 'ROLE_CONDUCTEUR' n'existe pas en base.");
         }
 
-        if ($role && $user->getRoleEntities()->contains($role)) {
-            $user->removeRole($role);
-            $em->flush();
+        // Supprimer le rôle passager s’il est présent
+        if ($rolePassager && $user->getRoleEntities()->contains($rolePassager)) {
+            $user->removeRole($rolePassager);
         }
+
+        // Ajouter le rôle conducteur s’il n’est pas déjà présent
+        if (!$user->getRoleEntities()->contains($roleConducteur)) {
+            $user->addRole($roleConducteur);
+        }
+
+        $em->persist($user);
+        $em->flush();
 
         return $this->redirectToRoute('app_profile');
     }
+
+
+    #[Route('/profil/devenir-passager', name: 'app_devenir_passager', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function devenirPassager(EntityManagerInterface $em, RoleRepository $roleRepo): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || !$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour effectuer cette action.');
+        }
+
+        $rolePassager = $roleRepo->findOneBy(['libelle' => 'ROLE_PASSAGER']);
+        $roleConducteur = $roleRepo->findOneBy(['libelle' => 'ROLE_CONDUCTEUR']);
+
+        if (!$rolePassager) {
+            throw $this->createNotFoundException("Le rôle 'ROLE_PASSAGER' n'existe pas en base.");
+        }
+
+        // Supprimer le rôle conducteur s’il est présent
+        if ($roleConducteur && $user->getRoleEntities()->contains($roleConducteur)) {
+            $user->removeRole($roleConducteur);
+        }
+
+        // Ajouter le rôle passager s’il n’est pas déjà présent
+        if (!$user->getRoleEntities()->contains($rolePassager)) {
+            $user->addRole($rolePassager);
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->redirectToRoute('app_profile');
+    }
+
 
 
     #[Route('/historique', name: 'app_profil_historique')]
@@ -73,26 +118,6 @@ class ProfileController extends AbstractController
         return $this->render('profile/historique.html.twig', [
             'covoiturages' => $covoiturages,
         ]);
-    }
-
-
-    #[Route('/profil/devenir-passager', name: 'app_devenir_passager', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function devenirPassager(EntityManagerInterface $em, RoleRepository $roleRepo): Response
-    {
-        $user = $this->getUser();
-
-        if (!$user || !$user instanceof User) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour effectuer cette action.');
-        }
-
-        $role = $roleRepo->findOneBy(['libelle' => 'ROLE_CONDUCTEUR']);
-        if ($role && $user->getRoleEntities()->contains($role)) {
-            $user->removeRole($role);
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('app_profile');
     }
 
     #[Route('/profil/modifier', name: 'app_modifier_profil')]

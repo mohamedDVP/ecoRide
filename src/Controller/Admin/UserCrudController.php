@@ -77,7 +77,7 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             TextField::new("email")->setLabel('Email'),
-            AssociationField::new('role') // Utilise 'role' pour la relation ManyToMany avec Role
+            AssociationField::new('roleEntities') // Utilise 'role' pour la relation ManyToMany avec Role
                 ->setCrudController(RoleCrudController::class) // Assurez-vous que RoleCrudController est défini
                 ->setFormTypeOptions([
                     'choice_label' => 'libelle', // Utilisez 'libelle' si c'est le nom du rôle

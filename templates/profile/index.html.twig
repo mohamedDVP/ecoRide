@@ -41,7 +41,7 @@
                         {% if 'ROLE_CONDUCTEUR' in roleNames %}
                             Conducteur
                             <form method="post" action="{{ path('app_devenir_passager') }}" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-warning ms-3">Devenir passager</button>
+                                <button type="submit" class="btn btn-sm btn-success ms-3">Devenir passager</button>
                             </form>
                         {% elseif 'ROLE_PASSAGER' in roleNames %}
                             Passager
