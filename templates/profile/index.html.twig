@@ -1,47 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profile!{% endblock %}
+{% block title %}Mon profil
+{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue sur votre profil, {{ app.user.nom }}</h1>
+	<div class="container mt-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="mb-0">Mon profil</h1>
+			<a href="{{ path('app_modifier_profil') }}" class="btn btn-outline-primary">Modifier mon profil</a>
+		</div>
 
-    {% if app.user.credits is not null %}
-        <p>Vous avez {{ app.user.credits }} crédits.</p>
-    {% else %}
-        <p>Vous n'avez pas encore de crédits.</p>
-    {% endif %}
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Informations personnelles</h5>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						<strong>Nom :</strong>
+						{{ user.nom }}</li>
+					<li class="list-group-item">
+						<strong>Prénom :</strong>
+						{{ user.prenom }}</li>
+					<li class="list-group-item">
+						<strong>Email :</strong>
+						{{ user.email }}</li>
+					<li class="list-group-item">
+						<strong>Adresse :</strong>
+						{{ user.adresse }}</li>
+					<li class="list-group-item">
+						<strong>Pseudo :</strong>
+						{{ user.pseudo }}</li>
+					<li class="list-group-item">
+						<strong>Téléphone :</strong>
+						{{ user.telephone }}</li>
+					<li class="list-group-item">
+						<strong>Crédits :</strong>
+						{{ user.credits }}</li>
+					<li class="list-group-item">
+						<strong>Rôle :</strong>
+                        {% set roleNames = user.roleNames %}
+                        {% if 'ROLE_CONDUCTEUR' in roleNames %}
+                            Conducteur
+                            <form method="post" action="{{ path('app_devenir_passager') }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success ms-3">Devenir passager</button>
+                            </form>
+                        {% elseif 'ROLE_PASSAGER' in roleNames %}
+                            Passager
+                            <form method="post" action="{{ path('app_devenir_conducteur') }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success ms-3">Devenir conducteur</button>
+                            </form>
+                        {% else %}
+                            Inconnu
+                        {% endif %}
+					</li>
+				</ul>
+			</div>
+		</div>
 
-    {% if is_granted('ROLE_CONDUCTEUR') %}
-        <p>Vous êtes conducteur.</p>
-        <button id="switch-role" data-role="passager">Devenir passager</button>
-    {% else %}
-        <p>Vous êtes passager.</p>
-        <button id="switch-role" data-role="conducteur">Devenir conducteur</button>
-    {% endif %}
-
-    <script>
-        document.getElementById('switch-role').addEventListener('click', function () {
-            let newRole = this.getAttribute('data-role');
-            if (confirm("Voulez-vous vraiment devenir " + newRole + " ?")) {
-                fetch('{{ path("app_switch_role") }}', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    body: JSON.stringify({ role: newRole })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("Votre rôle a été mis à jour !");
-                            location.reload();
-                        } else {
-                            alert("Une erreur s'est produite.");
-                        }
-                    });
-            }
-        });
-    </script>
-
+		{% if 'ROLE_CONDUCTEUR' in user.roles %}
+			<div class="card mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Mes véhicules</h5>
+					{% if user.voitures|length > 0 %}
+						<ul class="list-group">
+							{% for voiture in user.voitures %}
+								<li class="list-group-item">
+									{{ voiture.marque }}
+									-
+									{{ voiture.modele }}
+									({{ voiture.immatriculation }})
+								</li>
+							{% endfor %}
+						</ul>
+					{% else %}
+						<p class="text-muted">Vous n'avez enregistré aucun véhicule.</p>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
 {% endblock %}
+

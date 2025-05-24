@@ -90,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_role')]
-    private Collection $role;
+    private Collection $roleEntities;
 
     /**
      * @var Collection<int, Configuration>
@@ -109,7 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->voitures = new ArrayCollection();
         $this->covoiturages = new ArrayCollection();
         $this->avis = new ArrayCollection();
-        $this->role = new ArrayCollection();
+        $this->roleEntities = new ArrayCollection();
         $this->configurations = new ArrayCollection();
     }
 
@@ -147,6 +147,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
+        
         // Assurez-vous que chaque utilisateur a au moins ROLE_USER
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
@@ -373,25 +374,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Role>
      */
-    public function getRole(): Collection
+    public function getRoleEntities(): Collection
     {
-        return $this->role;
+        return $this->roleEntities;
     }
 
     public function addRole(Role $role): static
     {
-        if (!$this->role->contains($role)) {
-            $this->role[] = $role;
+        if (!$this->roleEntities->contains($role)) {
+            $this->roleEntities->add($role);
         }
-
         return $this;
     }
 
     public function removeRole(Role $role): static
     {
-        $this->role->removeElement($role);
-
+        $this->roleEntities->removeElement($role);
         return $this;
+    }
+
+    public function getRoleNames(): array
+    {
+        return $this->roleEntities->map(fn(Role $role) => $role->getLibelle())->toArray();
     }
 
     /**
