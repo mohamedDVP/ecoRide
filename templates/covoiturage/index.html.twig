@@ -26,7 +26,7 @@
 				<label for="arrivalDate">Date d'arrivée</label>
 				<input type="date" id="arrivalDate" name="arrivalDate" class="form-control" value="{{ app.request.query.get('arrivalDate') }}">
 			</div>
-			<button type="submit" class="btn btn-primary">Rechercher</button>
+			<button type="submit" class="btn btn-success">Rechercher</button>
 		</form>
 	</div>
 	
@@ -80,7 +80,7 @@
 										</p>
 									</div>
 									<div class="text-center">
-										<a href="{{ path('covoiturage_detail', {'id': covoiturage.id}) }}" class="btn btn-primary">Détail</a>
+										<a href="{{ path('covoiturage_detail', {'id': covoiturage.id}) }}" class="btn btn-success">Détail</a>
 									</div>
 								</div>
 							</div>
