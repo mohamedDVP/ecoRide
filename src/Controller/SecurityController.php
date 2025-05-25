@@ -26,6 +26,6 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
         // Controller pour la déconnexion, mais Symfony gère directement la déconnexion.
-        throw new Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+        throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 }
