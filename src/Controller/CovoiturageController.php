@@ -89,9 +89,12 @@ class CovoiturageController extends AbstractController
 
         return $this->render('covoiturage/detail.html.twig', [
             'covoiturage' => $covoiturage,
-        ]);
+            'user' => $this->getUser(), // Passer l'utilisateur connecté à la vue
+        ])->setStatusCode(Response::HTTP_OK);
     }
 
+    #[Route('/covoiturage/historique', name: 'covoiturage_historique')]
+    #[IsGranted('ROLE_USER')]
     public function historique(CovoiturageRepository $covoiturageRepository, UserInterface $user): Response
     {
         // Vérifier si l'utilisateur est bien connecté (utile si tu veux renforcer la sécurité)
@@ -109,5 +112,97 @@ class CovoiturageController extends AbstractController
         ]);
     }
 
+    #[Route('/covoiturage/participer/{id}', name: 'covoiturage_participer', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function participer(int $id, CovoiturageRepository $covoiturageRepository, EntityManagerInterface $entityManager): Response
+    {
+        $covoiturage = $covoiturageRepository->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Ce covoiturage n\'existe pas.');
+        }
+
+        // Ajouter l'utilisateur connecté au covoiturage
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $covoiturage->addUser($user);
+            $entityManager->persist($covoiturage);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous avez rejoint le covoiturage avec succès.');
+        } else {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour participer à un covoiturage.');
+        }
+
+        return $this->render('covoiturage/confirmation.html.twig', [
+            'covoiturage' => $covoiturage,
+        ]);
+    }
+    
+    #[Route('/covoiturage/annuler/{id}', name: 'covoiturage_annuler', requirements: ['id' => '\d+'])]
+    public function annuler(int $id, CovoiturageRepository $covoiturageRepository, EntityManagerInterface $entityManager): Response
+    {
+        $covoiturage = $covoiturageRepository->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Ce covoiturage n\'existe pas.');
+        }
+
+        // Retirer l'utilisateur connecté du covoiturage
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $covoiturage->removeUser($user);
+            $entityManager->persist($covoiturage);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous avez quitté le covoiturage avec succès.');
+        } else {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour annuler votre participation à un covoiturage.');
+        }
+
+        return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
+    }
+    #[Route('/covoiturage/modifier/{id}', name: 'covoiturage_modifier', requirements: ['id' => '\d+'])]
+    public function modifier(int $id, Request $request, CovoiturageRepository $covoiturageRepository, EntityManagerInterface $entityManager): Response
+    {
+        $covoiturage = $covoiturageRepository->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Ce covoiturage n\'existe pas.');
+        }
+
+        $form = $this->createForm(CovoiturageType::class, $covoiturage);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($covoiturage);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le covoiturage a été modifié avec succès.');
+
+            return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
+        }
+
+        return $this->render('covoiturage/modifier.html.twig', [
+            'form' => $form->createView(),
+            'covoiturage' => $covoiturage,
+        ]);
+    }
+    #[Route('/covoiturage/supprimer/{id}', name: 'covoiturage_supprimer', requirements: ['id' => '\d+'])]
+    public function supprimer(int $id, CovoiturageRepository $covoiturageRepository, EntityManagerInterface $entityManager): Response
+    {
+        $covoiturage = $covoiturageRepository->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Ce covoiturage n\'existe pas.');
+        }
+
+        $entityManager->remove($covoiturage);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le covoiturage a été supprimé avec succès.');
+
+        return $this->redirectToRoute('app_covoiturage');
+    }
 
 }
