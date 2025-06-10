@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de participation{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Participation confirmée</h1>
+
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Départ :</strong> {{ covoiturage.getLieuDepart() }}</li>
+            <li class="list-group-item"><strong>Arrivée :</strong> {{ covoiturage.getLieuArrivee() }}</li>
+            <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateDepart()|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}</li>
+            <li class="list-group-item"><strong>Date :</strong> {{ covoiturage.getDateArrivee()|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}</li>
+        </ul>
+        <div class="mt-4">
+            <p>Vous avez été ajouté à la liste des participants.</p>
+            <a class="btn btn-success" href="{{ path('covoiturage_liste') }}">Retour à la liste des covoiturages</a>
+            <a class="btn btn-danger" href="{{ path('covoiturage_annuler', {'id': covoiturage.id}) }}">Annuler ce covoiturage</a>
+            <a class="btn btn-outline-success" href="{{ path('covoiturage_modifier', {'id': covoiturage.id}) }}">Modifier ce covoiturage</a>
+            <a class="btn btn-primary" href="{{ path('app_profil_historique') }}">Voir mon historique</a>
+        </div>
+    </div>
+{% endblock %}
