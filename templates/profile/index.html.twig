@@ -10,6 +10,17 @@
 			<a href="{{ path('app_modifier_profil') }}" class="btn btn-outline-success">Modifier mon profil</a>
 		</div>
 
+		{% if user.isVerified() %}
+			<div class="alert alert-secondary mt-4" role="alert">
+				Votre compte est vérifié.
+			</div>
+		{% else %}
+			<div class="alert alert-warning mt-4" role="alert">
+				Votre compte n'est pas encore vérifié. Veuillez vérifier votre email.
+			</div>
+		{% endif %}
+
+
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title">Informations personnelles</h5>
@@ -85,15 +96,7 @@
 			</div>
 		{% endif %}
 
-		{% if user.isVerified() %}
-			<div class="alert alert-secondary mt-4" role="alert">
-				Votre compte est vérifié.
-			</div>
-		{% else %}
-			<div class="alert alert-warning mt-4" role="alert">
-				Votre compte n'est pas encore vérifié. Veuillez vérifier votre email.
-			</div>
-		{% endif %}
+		
 	</div>
 {% endblock %}
 
