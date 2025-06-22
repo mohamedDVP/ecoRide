@@ -48,8 +48,8 @@
                             <form method="post" action="{{ path('app_devenir_conducteur') }}" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-success ms-3">Devenir conducteur</button>
                             </form>
-                        {% else %}
-                            Inconnu
+                        {% elseif 'ROLE_ADMIN' in roleNames %}
+                            Administrateur
                         {% endif %}
 					</li>
 				</ul>
@@ -75,6 +75,23 @@
 						<p class="text-muted">Vous n'avez enregistré aucun véhicule.</p>
 					{% endif %}
 				</div>
+			</div>
+		{% elseif 'ROLE_ADMIN' in user.roles %}
+			<div class="card mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Accéder à la page d'administration</h5>
+					<a href="{{ path('admin') }}" class="btn btn-success">Interface d'administration</a>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if user.isVerified() %}
+			<div class="alert alert-secondary mt-4" role="alert">
+				Votre compte est vérifié.
+			</div>
+		{% else %}
+			<div class="alert alert-warning mt-4" role="alert">
+				Votre compte n'est pas encore vérifié. Veuillez vérifier votre email.
 			</div>
 		{% endif %}
 	</div>

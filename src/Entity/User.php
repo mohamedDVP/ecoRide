@@ -379,6 +379,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roleEntities;
     }
 
+    public function setRoleEntities(Collection $roles): self
+    {
+        $this->roleEntities = $roles;
+        return $this;
+    }
+
     public function addRole(Role $role): static
     {
         if (!$this->roleEntities->contains($role)) {
@@ -433,10 +439,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->isVerified;
     }
 
-    public function setVerified(bool $isVerified): static
+    public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
-
         return $this;
     }
 

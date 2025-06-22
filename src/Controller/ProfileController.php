@@ -23,6 +23,7 @@ class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
     #[IsGranted('ROLE_USER')] // Vérifie que l'utilisateur est connecté
+    #[IsGranted('ROLE_ADMIN')]
     public function index(#[CurrentUser] ?User $user): Response
     {
         if (!$user) {
@@ -80,6 +81,7 @@ class ProfileController extends AbstractController
 
         $rolePassager = $roleRepo->findOneBy(['libelle' => 'ROLE_PASSAGER']);
         $roleConducteur = $roleRepo->findOneBy(['libelle' => 'ROLE_CONDUCTEUR']);
+        $roleAdmin = $roleRepo->findOneBy(['libelle' => 'ROLE_ADMIN']);
 
         if (!$rolePassager) {
             throw $this->createNotFoundException("Le rôle 'ROLE_PASSAGER' n'existe pas en base.");
@@ -93,6 +95,11 @@ class ProfileController extends AbstractController
         // Ajouter le rôle passager s’il n’est pas déjà présent
         if (!$user->getRoleEntities()->contains($rolePassager)) {
             $user->addRole($rolePassager);
+        }
+
+        // Si l'utilisateur a le rôle admin, on le garde
+        if ($roleAdmin && !$user->getRoleEntities()->contains($roleAdmin)) {
+            $user->addRole($roleAdmin);
         }
 
         $em->persist($user);
